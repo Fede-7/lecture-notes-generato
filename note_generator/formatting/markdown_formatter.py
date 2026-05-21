@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+import unicodedata
 from typing import Any
 
 from note_generator.formatting.mermaid_generator import generate_mermaid_diagram
@@ -10,6 +12,13 @@ try:
     from jinja2 import Template
 except Exception:  # pragma: no cover - optional dependency
     Template = None
+
+
+def _slugify(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value)
+    ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_text.lower()).strip("-")
+    return slug or "section"
 
 
 def _render_content(item: dict[str, Any]) -> str:
@@ -31,11 +40,11 @@ def _render_content(item: dict[str, Any]) -> str:
 def _build_toc(sections: list[dict[str, Any]]) -> str:
     lines = ["## Indice"]
     for section in sections:
-        lines.append(f"- [{section['id']} {section['title']}](#{section['id']}-{section['title'].lower().replace(' ', '-')})")
+        section_label = f"{section['id']} {section['title']}"
+        lines.append(f"- [{section_label}](#{_slugify(section_label)})")
         for subsection in section.get("subsections", []):
-            lines.append(
-                f"  - [{subsection['id']} {subsection['title']}](#{subsection['id']}-{subsection['title'].lower().replace(' ', '-')})"
-            )
+            subsection_label = f"{subsection['id']} {subsection['title']}"
+            lines.append(f"  - [{subsection_label}](#{_slugify(subsection_label)})")
     return "\n".join(lines)
 
 

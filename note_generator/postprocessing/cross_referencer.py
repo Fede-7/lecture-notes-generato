@@ -15,7 +15,7 @@ def add_cross_references(document: dict[str, Any]) -> dict[str, Any]:
         for candidate in sections[index + 1 :]:
             if current_keywords & set(candidate.get("keywords", [])):
                 matches.append({"id": candidate["id"], "title": candidate["title"]})
-        if not matches:
+        if not matches and index + 1 < len(sections):
             candidate = sections[index + 1]
             matches.append({"id": candidate["id"], "title": candidate["title"]})
         section["cross_references"] = matches[:2]
