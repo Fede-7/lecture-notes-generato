@@ -16,7 +16,7 @@ except Exception:  # pragma: no cover - optional dependency
 
 def _slugify(value: str) -> str:
     normalized = unicodedata.normalize("NFC", value).lower()
-    slug = "".join(char for char in normalized if char.isalnum() or char in {" ", "-"})
+    slug = "".join(char for char in normalized if char.isalpha() or char.isdigit() or char in {" ", "-"})
     slug = re.sub(r"[-\s]+", "-", slug, flags=re.UNICODE).strip("-")
     return slug or "section"
 
