@@ -25,13 +25,15 @@ class PipelineArtifacts:
     contents: dict[str, Any]
     structure: dict[str, Any]
     output: str
+    model_hint: str
 
 
 class LectureNotesPipeline:
     """Six-step pipeline that converts lecture transcripts into structured notes."""
 
-    def __init__(self, config: PipelineConfig = DEFAULT_CONFIG) -> None:
+    def __init__(self, config: PipelineConfig = DEFAULT_CONFIG, model_hint: str | None = None) -> None:
         self.config = config
+        self.model_hint = model_hint or config.model_settings["default"]
 
     def run(self, text: str, output_format: str | None = None) -> PipelineArtifacts:
         """Execute the full pipeline and return all intermediate artifacts."""
@@ -46,4 +48,11 @@ class LectureNotesPipeline:
             output = format_latex(structure)
         else:
             output = format_markdown(structure)
-        return PipelineArtifacts(cleaned=cleaned, topics=topics, contents=contents, structure=structure, output=output)
+        return PipelineArtifacts(
+            cleaned=cleaned,
+            topics=topics,
+            contents=contents,
+            structure=structure,
+            output=output,
+            model_hint=self.model_hint,
+        )

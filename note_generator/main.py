@@ -27,9 +27,9 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     text = read_text(args.input)
-    pipeline = LectureNotesPipeline()
+    pipeline = LectureNotesPipeline(model_hint=args.model)
     result = pipeline.run(text, output_format=args.format)
     output_path = Path(args.output)
     write_text(output_path, result.output)
-    print(f"Generated {args.format} notes at {output_path} using model hint {args.model}.")
+    print(f"Generated {args.format} notes at {output_path} using model hint {result.model_hint}.")
     return 0
