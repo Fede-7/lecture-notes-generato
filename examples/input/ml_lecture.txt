@@ -1,0 +1,3 @@
+ok allora parliamo di ML. Il linguaggio ML è un linguaggio funzionale.
+Ad esempio, un compilatore traduce un albero sintattico con una visita posticipata.
+fun codegen tree = translate tree
