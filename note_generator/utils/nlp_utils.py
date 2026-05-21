@@ -22,7 +22,7 @@ def get_nlp():
         if "sentencizer" not in nlp.pipe_names:
             nlp.add_pipe("sentencizer")
         return nlp
-    except Exception:
+    except ImportError:
         return None
 
 

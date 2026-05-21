@@ -10,13 +10,13 @@ from note_generator.formatting.mermaid_generator import generate_mermaid_diagram
 
 try:
     from jinja2 import Template
-except Exception:  # pragma: no cover - optional dependency
+except ImportError:  # pragma: no cover - optional dependency
     Template = None
 
 
 def _slugify(value: str) -> str:
     normalized = unicodedata.normalize("NFC", value).lower()
-    slug = "".join(char for char in normalized if char.isalpha() or char.isdigit() or char in {" ", "-"})
+    slug = "".join(char for char in normalized if char.isalpha() or char.isdigit() or char in {" ", "-", "_"})
     slug = re.sub(r"[-\s]+", "-", slug, flags=re.UNICODE).strip("-")
     return slug or "section"
 

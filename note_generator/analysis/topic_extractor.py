@@ -11,7 +11,7 @@ from note_generator.utils.nlp_utils import extract_keywords
 
 try:
     from joblib import Memory
-except Exception:  # pragma: no cover - optional dependency
+except ImportError:  # pragma: no cover - optional dependency
     Memory = None
 
 
