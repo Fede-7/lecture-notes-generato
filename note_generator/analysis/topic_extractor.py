@@ -25,6 +25,12 @@ class TopicChunk:
 memory = Memory(location=DEFAULT_CONFIG.cache_dir, verbose=0) if Memory is not None else None
 
 
+def _cacheable(function):
+    if memory is None:
+        return function
+    return memory.cache(function)
+
+
 def _build_title(sentences: tuple[str, ...], stopwords: set[str]) -> str:
     source = sentences[0] if sentences else "Argomento"
     keywords = extract_keywords(source, stopwords, limit=3)
@@ -33,7 +39,7 @@ def _build_title(sentences: tuple[str, ...], stopwords: set[str]) -> str:
     return source[:60].strip().rstrip(".") or "Argomento"
 
 
-@memory.cache if memory is not None else (lambda func: func)
+@_cacheable
 def _cached_extract_topics(sentences: tuple[str, ...], max_topics: int, sentences_per_topic: int, stopwords: tuple[str, ...]) -> dict[str, Any]:
     stopword_set = set(stopwords)
     if not sentences:

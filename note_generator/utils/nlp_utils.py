@@ -43,12 +43,14 @@ def extract_keywords(text: str, stopwords: set[str], limit: int = 4) -> list[str
 
     words = re.findall(r"[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ0-9_-]*", text)
     keywords: list[str] = []
+    seen: set[str] = set()
     for word in words:
         lowered = word.lower()
         if len(word) <= 1 or lowered in stopwords:
             continue
-        if word not in keywords:
+        if word not in seen:
             keywords.append(word)
+            seen.add(word)
         if len(keywords) >= limit:
             break
     return keywords
