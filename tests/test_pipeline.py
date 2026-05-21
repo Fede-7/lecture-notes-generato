@@ -1,5 +1,6 @@
 import unittest
 
+from note_generator.formatting.markdown_formatter import format_markdown
 from note_generator.pipeline import LectureNotesPipeline
 
 
@@ -29,6 +30,28 @@ class PipelineTests(unittest.TestCase):
 
         self.assertIn("\\documentclass{article}", result.output)
         self.assertIn("\\section{1", result.output)
+
+    def test_markdown_toc_preserves_italian_accents_in_anchors(self) -> None:
+        document = {
+            "title": "Test",
+            "structure": [
+                {
+                    "id": "1",
+                    "title": "Più concetti chiave",
+                    "content": [],
+                    "subsections": [
+                        {"id": "1.1", "title": "Nozioni già viste", "content": [], "subsections": []}
+                    ],
+                    "cross_references": [],
+                    "exercises": [],
+                }
+            ],
+        }
+
+        output = format_markdown(document)
+
+        self.assertIn("(#1-più-concetti-chiave)", output)
+        self.assertIn("(#11-nozioni-già-viste)", output)
 
 
 if __name__ == "__main__":
