@@ -1,2 +1,0 @@
-ok allora oggi parliamo di file system. Il journaling è una tecnica che registra le modifiche ai metadata.
-Ad esempio, EXT3 usa un log per ridurre il rischio di corruzione. L'albero sintattico di 3 + 5 * 2 mostra la precedenza degli operatori.

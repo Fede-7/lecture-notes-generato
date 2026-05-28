@@ -18,6 +18,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", required=True, help="Path to the generated Markdown/LaTeX file.")
     parser.add_argument("--format", default=DEFAULT_CONFIG.default_output_format, choices=("markdown", "latex"))
     parser.add_argument("--model", default=DEFAULT_CONFIG.model_settings["default"], help="Optional Ollama model hint.")
+    parser.add_argument("--use-llm", action="store_true", help="If set, try to use a local LLM with the provided model hint and optional prompt path.")
+    parser.add_argument("--llm-prompt", help="Path to a prompt template to use with the local LLM. If set, the prompt will be concatenated with the cleaned transcription.")
     return parser
 
 
@@ -27,7 +29,12 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     text = read_text(args.input)
-    pipeline = LectureNotesPipeline(model_hint=args.model)
+    model_hint = args.model
+    # If user requested LLM usage and supplied a prompt, pass prompt path via a
+    # lightweight convention in the model_hint string: "{model}|prompt:{path}".
+    if args.use_llm and args.llm_prompt:
+        model_hint = f"{args.model}|prompt:{args.llm_prompt}"
+    pipeline = LectureNotesPipeline(model_hint=model_hint)
     result = pipeline.run(text, output_format=args.format)
     output_path = Path(args.output)
     write_text(output_path, result.output)
