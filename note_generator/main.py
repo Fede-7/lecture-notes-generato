@@ -17,9 +17,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--input", required=True, help="Path to the raw transcription text file.")
     parser.add_argument("--output", required=True, help="Path to the generated Markdown/LaTeX file.")
     parser.add_argument("--format", default=DEFAULT_CONFIG.default_output_format, choices=("markdown", "latex"))
-    parser.add_argument("--model", default=DEFAULT_CONFIG.model_settings["default"], help="Optional Ollama model hint.")
-    parser.add_argument("--use-llm", action="store_true", help="If set, try to use a local LLM with the provided model hint and optional prompt path.")
-    parser.add_argument("--llm-prompt", help="Path to a prompt template to use with the local LLM. If set, the prompt will be concatenated with the cleaned transcription.")
+    parser.add_argument("--model", default=DEFAULT_CONFIG.model_settings["default"], help="Optional LM Studio model name.")
+    parser.add_argument("--use-llm", action="store_true", help="If set, use the configured LM Studio server with the provided model name and optional prompt path.")
+    parser.add_argument("--llm-prompt", help="Path to a prompt template to use with LM Studio. If set, the prompt will be concatenated with the cleaned transcription.")
     return parser
 
 

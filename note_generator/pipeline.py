@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Any
 
@@ -15,7 +16,6 @@ from note_generator.postprocessing.validator import validate_structure
 from note_generator.preprocessing.cleaner import clean_transcription
 from note_generator.structuring.hierarchy_builder import build_hierarchy
 from note_generator.llm.llm_client import generate as llm_generate
-import json
 
 
 @dataclass
@@ -63,7 +63,13 @@ class LectureNotesPipeline:
                 prompt_template = ""
             model_prompt = prompt_template + "\n\nTRASCRIZIONE:\n" + cleaned.get("cleaned_text", "")
             try:
-                llm_out = llm_generate(model_prompt, model=self.model_hint)
+                llm_out = llm_generate(
+                    model_prompt,
+                    model=self.model_hint,
+                    base_url=self.config.lm_studio_api_url,
+                    api_key=self.config.lm_studio_api_key,
+                    system_prompt=self.config.lm_studio_system_prompt,
+                )
                 # Try to parse JSON structure+rendered_markdown returned by model
                 try:
                     parsed = json.loads(llm_out)

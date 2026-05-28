@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import os
 from pathlib import Path
 
 
@@ -46,10 +47,25 @@ class PipelineConfig:
     cache_dir: Path = field(default_factory=lambda: Path(".cache") / "lecture_notes")
     model_settings: dict[str, str] = field(
         default_factory=lambda: {
-            "default": "qwen3:8b",
-            "coding": "deepseek-coder-v2:16b",
-            "reasoning": "qwen2.5:14b",
+            "default": os.getenv(
+                "LM_STUDIO_MODEL",
+                "qwen3.5-9b-claude-4.6-opus-reasoning-distilled-v2",
+            ),
+            "coding": "deepseek-ai/deepseek-coder-v2-lite-instruct",
+            "reasoning": os.getenv(
+                "LM_STUDIO_REASONING_MODEL",
+                "jackrong/qwen3.5-9b-claude-4.6-opus-reasoning-distilled-v2",
+            ),
         }
+    )
+    llm_backend: str = field(default_factory=lambda: os.getenv("LLM_BACKEND", "lm_studio"))
+    lm_studio_api_url: str = field(default_factory=lambda: os.getenv("LM_STUDIO_API_URL", "http://localhost:1234/v1"))
+    lm_studio_api_key: str | None = field(default_factory=lambda: os.getenv("LM_STUDIO_API_KEY"))
+    lm_studio_system_prompt: str = field(
+        default_factory=lambda: os.getenv(
+            "LM_STUDIO_SYSTEM_PROMPT",
+            "Sei un assistente preciso e coerente. Segui le istruzioni alla lettera.",
+        )
     )
 
 
